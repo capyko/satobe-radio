@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>さとべぇRADIO アーカイブ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf9f6;
+    --bg2: #f2f0eb;
+    --border: #e0ddd5;
+    --text: #1a1814;
+    --text2: #6b6760;
+    --text3: #a09d97;
+    --accent: #2d5a3d;
+    --accent-light: #e8f0eb;
+    --accent2: #8b5e3c;
+    --accent2-light: #f5ede4;
+    --purple: #4a3f6b;
+    --purple-light: #ede9f5;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  header {
+    padding: 3rem 2rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+  .site-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+  .site-sub {
+    font-size: 12px;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  .filter-section {
+    margin-bottom: 1.5rem;
+  }
+  .filter-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tag {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text2);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: 'Noto Sans JP', sans-serif;
+    white-space: nowrap;
+  }
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+  .tag.active-mood { background: var(--accent-light); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+  .tag.active-topic { background: var(--accent2-light); border-color: var(--accent2); color: var(--accent2); font-weight: 500; }
+  .tag.active-series { background: var(--purple-light); border-color: var(--purple); color: var(--purple); font-weight: 500; }
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .results-count { font-size: 12px; color: var(--text3); }
+  .clear-btn {
+    font-size: 12px;
+    color: var(--text3);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .clear-btn:hover { color: var(--text2); }
+  .ep-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 10px;
+    transition: border-color 0.15s, transform 0.1s;
+  }
+  .ep-card:hover { border-color: #c0bdb5; transform: translateY(-1px); }
+  .ep-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .ep-num {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'Noto Serif JP', serif;
+  }
+  .ep-date { font-size: 11px; color: var(--text3); }
+  .ep-length {
+    font-size: 11px;
+    color: var(--text3);
+    background: var(--bg2);
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+  .ep-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .ep-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+  .ep-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--bg2);
+    color: var(--text2);
+  }
+  .ep-tag.mood { background: var(--accent-light); color: var(--accent); }
+  .ep-tag.topic { background: var(--accent2-light); color: var(--accent2); }
+  .empty {
+    text-align: center;
+    padding: 3rem 0;
+    color: var(--text3);
+    font-size: 13px;
+  }
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+  }
+  @media (max-width: 600px) {
+    header { padding: 2rem 1.2rem 1.5rem; }
+    .container { padding: 1.2rem; }
+    .site-title { font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="site-title">さとべいラジオ</div>
+  <div class="site-sub">俳優・松田さとし — エピソードアーカイブ</div>
+</header>
+
+<div class="container">
+
+  <div class="filter-section">
+    <div class="filter-label">気分で探す</div>
+    <div class="tags" id="mood-tags"></div>
+  </div>
+
+  <div class="filter-section">
+    <div class="filter-label">テーマで探す</div>
+    <div class="tags" id="topic-tags"></div>
+  </div>
+
+  <div class="filter-section">
+    <div class="filter-label">シリーズで探す</div>
+    <div class="tags" id="series-tags"></div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="results-header">
+    <span class="results-count" id="result-count"></span>
+    <button class="clear-btn" onclick="clearAll()">すべてクリア</button>
+  </div>
+
+  <div id="results"></div>
+
+</div>
+
+<script>
+// ▼▼▼ エピソードデータをここに追加していく ▼▼▼
+const episodes = [
+  {
+    id: 603,
+    date: "2026/3/26(木)",
+    title: "紘毅さんと村越正海さんと釣りをする",
+    length: "24分",
+    mood: ["熱量高め","語ってる","じっくり聴きたい","ほっこり","興奮気味"],
+    topic: ["釣り","太刀魚ジギング","乗り合い船","釣り仲間","村越正海","ヒロキさん","釣り道具","メタルジグ"],
+    recommend: ["釣り好きに刺さる","趣味への情熱が好きな人向け","人間関係の話が好きな人向け","さとしさんの素顔"],
+    series: ["釣りシリーズ","釣り後日談","仲間との話","出会いと縁"]
+  },
+  {
+    id: 602,
+    date: "2026/3/25(水)",
+    title: "今日はタチウオジギング！",
+    length: "7分",
+    mood: ["ドキドキ","わくわく","テンション高め","リラックス","ほっこり"],
+    topic: ["釣り","太刀魚ジギング","乗り合い船","朝活","早朝配信","初体験"],
+    recommend: ["誰でも入りやすい","さとしさんの素顔"],
+    series: ["釣りシリーズ","朝の配信","お出かけ前"]
+  },
+  {
+    id: 601,
+    date: "2026/3/24(火)",
+    title: "MLビレッジとファンクラブの違いについて",
+    length: "約30分",
+    mood: ["まじめトーク","じっくり聴きたい","温かい","語ってる"],
+    topic: ["MLビレッジ","オンラインサロン","ファンクラブ","公式グッズ","バスツアー"],
+    recommend: ["コアファン向け","MLビレッジ気になってる人必聴","さとしさんの素顔"],
+    series: ["ファンコミュニティの話","活動報告","質問回答","レター紹介"]
+  }
+];
+// ▲▲▲ ここまで ▲▲▲
+
+const allMoods   = [...new Set(episodes.flatMap(e => e.mood))];
+const allTopics  = [...new Set(episodes.flatMap(e => e.topic))];
+const allSeries  = [...new Set(episodes.flatMap(e => e.series))];
+
+let selMoods   = new Set();
+let selTopics  = new Set();
+let selSeries  = new Set();
+
+function renderTags(containerId, tags, selectedSet, type) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  tags.forEach(tag => {
+    const btn = document.createElement('button');
+    btn.className = 'tag' + (selectedSet.has(tag) ? ` active-${type}` : '');
+    btn.textContent = tag;
+    btn.onclick = () => {
+      selectedSet.has(tag) ? selectedSet.delete(tag) : selectedSet.add(tag);
+      renderTags(containerId, tags, selectedSet, type);
+      renderResults();
+    };
+    el.appendChild(btn);
+  });
+}
+
+function renderResults() {
+  const filtered = episodes.filter(ep => {
+    const m = selMoods.size  === 0 || [...selMoods].some(t => ep.mood.includes(t));
+    const t = selTopics.size === 0 || [...selTopics].some(t => ep.topic.includes(t));
+    const s = selSeries.size === 0 || [...selSeries].some(t => ep.series.includes(t));
+    return m && t && s;
+  });
+
+  const total = selMoods.size + selTopics.size + selSeries.size;
+  document.getElementById('result-count').textContent =
+    total === 0 ? `全${episodes.length}件` : `${filtered.length} / ${episodes.length}件`;
+
+  const res = document.getElementById('results');
+  if (filtered.length === 0) {
+    res.innerHTML = '<div class="empty">該当するエピソードが見つかりませんでした</div>';
+    return;
+  }
+
+  res.innerHTML = filtered.map(ep => `
+    <div class="ep-card">
+      <div class="ep-meta">
+        <span class="ep-num">#${ep.id}</span>
+        <span class="ep-date">${ep.date}</span>
+        <span class="ep-length">${ep.length}</span>
+      </div>
+      <div class="ep-title">${ep.title}</div>
+      <div class="ep-tags">
+        ${ep.mood.map(t => `<span class="ep-tag mood">${t}</span>`).join('')}
+      </div>
+      <div class="ep-tags">
+        ${ep.topic.map(t => `<span class="ep-tag topic">${t}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function clearAll() {
+  selMoods.clear(); selTopics.clear(); selSeries.clear();
+  renderTags('mood-tags',   allMoods,   selMoods,   'mood');
+  renderTags('topic-tags',  allTopics,  selTopics,  'topic');
+  renderTags('series-tags', allSeries,  selSeries,  'series');
+  renderResults();
+}
+
+renderTags('mood-tags',   allMoods,   selMoods,   'mood');
+renderTags('topic-tags',  allTopics,  selTopics,  'topic');
+renderTags('series-tags', allSeries,  selSeries,  'series');
+renderResults();
+</script>
+</body>
+</html>
