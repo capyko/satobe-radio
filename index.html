@@ -4,10 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>さとべぇRADIO エピソードカタログ</title>
-
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
- 
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -51,16 +49,17 @@
   .site-sub {
     font-size: 12px;
     color: var(--text3);
-    letter-spacing: 0.08em;
+    letter-spacing: 0.04em;
+    margin-top: 4px;
   }
+  .site-sub a { color: var(--accent); text-decoration: none; }
+  .site-sub a:hover { text-decoration: underline; }
   .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
   }
-  .filter-section {
-    margin-bottom: 1.5rem;
-  }
+  .filter-section { margin-bottom: 1.5rem; }
   .filter-label {
     font-size: 11px;
     letter-spacing: 0.1em;
@@ -69,11 +68,7 @@
     margin-bottom: 10px;
     font-weight: 500;
   }
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .tag {
     padding: 5px 12px;
     border-radius: 20px;
@@ -124,11 +119,7 @@
     gap: 10px;
     margin-bottom: 6px;
   }
-  .ep-num {
-    font-size: 11px;
-    color: var(--text3);
-    font-family: 'Noto Serif JP', serif;
-  }
+  .ep-num { font-size: 11px; color: var(--text3); font-family: 'Noto Serif JP', serif; }
   .ep-date { font-size: 11px; color: var(--text3); }
   .ep-length {
     font-size: 11px;
@@ -160,6 +151,12 @@
     color: var(--text3);
     font-size: 13px;
   }
+  .loading {
+    text-align: center;
+    padding: 3rem 0;
+    color: var(--text3);
+    font-size: 13px;
+  }
   .divider {
     border: none;
     border-top: 1px solid var(--border);
@@ -179,199 +176,54 @@
   <div class="site-sub">stand.fmで公開中の俳優・松田悟志さんがナビゲートするさとべぇRADIOのエピソードカタログです。</div>
   <div class="site-sub">気分やカテゴリでエピソードを簡単に探せるようにしたいという思いから、このページを作成しました。</div>
   <div class="site-sub">※claudeを使用してタグ付けを行っています。内容に関してご質問やご不明点があれば、<a href="https://forms.gle/43gT93k5hYF9GEjr6" target="_blank">こちら</a>よりご連絡ください。</div>
-  </header>
+</header>
 
 <div class="container">
-
   <div class="filter-section">
     <div class="filter-label">気分で探す</div>
     <div class="tags" id="mood-tags"></div>
   </div>
-
   <div class="filter-section">
     <div class="filter-label">テーマで探す</div>
     <div class="tags" id="topic-tags"></div>
   </div>
-
   <div class="filter-section">
     <div class="filter-label">シリーズで探す</div>
     <div class="tags" id="series-tags"></div>
   </div>
-
   <hr class="divider">
-
   <div class="results-header">
     <span class="results-count" id="result-count"></span>
     <button class="clear-btn" onclick="clearAll()">すべてクリア</button>
   </div>
-
-  <div id="results"></div>
-
+  <div id="results"><div class="loading">読み込み中...</div></div>
 </div>
 
 <script>
-// ▼▼▼ エピソードデータをここに追加していく ▼▼▼
-const episodes = [
-  {
-    id: 603,
-    date: "2026/3/26(木)",
-    title: "『紘毅さんと村越正海さんと釣りをする』",
-    length: "24分",
-    mood: ["熱量高め", "語ってる", "じっくり聴きたい", "ほっこり", "興奮気味"],
-    topic: ["釣り", "タチウオジギング", "乗り合い船", "釣り仲間", "釣り道具"],
-    recommend: ["釣り好きに刺さる", "趣味への情熱が好きな人向け", "人間関係の話が好きな人向け"],
-    series: ["釣りシリーズ", "釣り後日談", "仲間との話", "出会いと縁"]
-  },
-  {
-    id: 602,
-    date: "2026/3/25(水)",
-    title: "『今日はタチウオジギング！』",
-    length: "7分",
-    mood: ["ドキドキ", "わくわく", "テンション高め", "リラックス", "ほっこり"],
-    topic: ["釣り", "太刀魚ジギング", "乗り合い船", "朝活", "早朝配信", "初体験"],
-    recommend: ["誰でも入りやすい"],
-    series: ["釣りシリーズ", "朝の配信", "お出かけ前"]
-  },
-  {
-    id: 601,
-    date: "2026/3/24(火)",
-    title: "『「claude」が名誉を挽回した夜』",
-    length: "15分",
-    mood: ["AI活用", "Claude", "デザイン", "ステッカー制作", "600回記念", "リスナー人気エピソード", "壁打ち活用"],
-    topic: ["おもしろい", "語ってる", "聴き流せる", "テンション高め", "ほっこり"],
-    recommend: ["AI興味ある人に刺さる", "誰でも入りやすい", "クスッとくる"],
-    series: ["AI・テクノロジーの話", "仕事道具の話", "節目・記念回", "日常トーク"]
-  },
-  {
-    id: 596,
-    date: "2026/3/19(木)",
-    title: "『手に入れたものと失ったもの』",
-    length: "約13分",
-    mood: ["AirPods", "ノイズキャンセリング", "読書", "ジャーナリング", "手書き", "AI・テクノロジー", "広島交流会", "インプット習慣"],
-    topic: ["しみじみ", "考えさせられる", "じっくり聴きたい", "温かい", "語ってる"],
-    recommend: ["共感しやすい", "自分を振り返りたい時に"],
-    series: ["日常の気づき", "テクノロジーと人間の話", "習慣・自己管理", "AI・テクノロジーの話"]
-  },
-  {
-    id: 595,
-    date: "2026/3/18(水)",
-    title: "『頭を切り替えて１日を分割する方法』",
-    length: "15分",
-    mood: ["脳科学", "昼寝・仮眠", "シャクティーマット", "1日の分割法", "集中力", "絵・制作", "WBC", "ベネズエラ", "Netflix", "スポーツ観戦", "習慣・自己管理"],
-    topic: ["ためになる", "語ってる", "じっくり聴きたい", "テンション高め", "熱量高め"],
-    recommend: ["仕事・集中力に悩んでる人に刺さる", "誰でも入りやすい"],
-    series: ["習慣・自己管理", "脳科学・健康", "制作の裏側", "日常の気づき"]
-  },
-  {
-    id: 592,
-    date: "2026/3/15(日)",
-    title: "『上向きの↑を手に入れる方法』",
-    length: "10分",
-    mood: ["人生観", "矢印の方向", "メンタル", "季節・春", "釣り", "水温", "WBC", "確定申告", "ベランダ収録"],
-    topic: ["しみじみ", "考えさせられる", "温かい", "聴き流せる", "ほっこり"],
-    recommend: ["人生に迷ってる時に", "共感しやすい", "リスナーへのメッセージ性強い", "誰でも入りやすい"],
-    series: ["人生観・哲学", "メンタル・気持ちの持ち方", "日常の気づき", "釣りと人生"]
-  },
-  {
-    id: 590,
-    date: "2026/3/13(金)",
-    title: "『「プレバト‼︎ USJスペシャル」感想戦』",
-    length: "24分",
-    mood: ["プレバト", "水彩画", "USJコラボ", "制作の裏側", "メルズドライブイン", "苦しみと喜び", "コンクール振り返り", "絵・制作", "技術の話"],
-    topic: ["熱量高め", "感動的", "語ってる", "じっくり聴きたい", "どっぷり系"],
-    recommend: ["プレバトファン必聴", "ものづくりする人に刺さる", "努力と結果の話が好きな人向け", "コアファン向け"],
-    series: ["プレバトシリーズ", "絵・制作の話", "コンクール振り返り", "制作の裏側"]
-  },
-  {
-    id: 589,
-    date: "2026/3/12(木)",
-    title: "『大好きな「プレバト‼︎」との出会い』",
-    length: "16分",
-    mood: ["プレバト", "USJコラボ", "水彩画", "絵・制作", "芸大受験", "青春時代", "コロナ禍", "ガッドインTV", "母親の話", "アトリエ整理", "ビッグマウス"],
-    topic: ["熱量高め", "語ってる", "じっくり聴きたい", "感動的", "どっぷり系"],
-    recommend: ["原点を知りたい人向け", "プレバトファン必聴", "夢を追う人に刺さる", "コアファン向け"],
-    series: ["プレバトシリーズ", "絵・制作の話", "青春・原点の話", "仕事への思い", "コロナ禍の話"]
-  },
-  {
-    id: 588,
-    date: "2026/3/11(水)",
-    title: "『あなたの今日が、素敵なものとなりますように』",
-    length: "16分",
-    mood: ["東日本大震災", "阪神淡路大震災", "震災体験談", "防災・備え", "日常への感謝", "命・生きること", "ユニクロ・ルーブル", "熱帯魚・水槽", "過去の思い出"],
-    topic: ["しみじみ", "考えさせられる", "温かい", "じっくり聴きたい", "落ち着く"],
-    recommend: ["共感しやすい", "リスナーへのメッセージ性強い", "3月11日に聴きたい", "人生を振り返りたい時に"],
-    series: ["人生観・哲学", "日常の気づき", "震災・社会の話", "過去の体験談"]
-  },
-  {
-    id: 587,
-    date: "2026/3/10(火)",
-    title: "『餅は餅屋の極み』",
-    length: "10分",
-    mood: ["花粉症", "眼科", "目薬", "健康・体のケア", "持ちは持ち屋", "絵・制作", "MLビレッジ配信", "雪・天気"],
-    topic: ["ほっこり", "聴き流せる", "軽め", "テンション高め", "クスッとくる"],
-    recommend: ["誰でも入りやすい", "さとしさんの素顔", "花粉症に悩む人に刺さる", "日常トーク好きに"],
-    series: ["健康・体のケア", "日常トーク", "日常の気づき", "豆知識・ためになる話"]
-  },
-  {
-    id: 586,
-    date: "2026/3/9(月)",
-    title: "『とらぞうの一大事』",
-    length: "12分",
-    mood: ["とらぞう", "リクガメ", "ペット", "抱卵", "動物病院", "AI活用", "レミオロメン", "友人の話", "テレビ撮影"],
-    topic: ["ほっこり", "温かい", "ドキドキ→安心", "聴き流せる", "癒し系"],
-    recommend: ["誰でも入りやすい", "ペット好きに刺さる", "クスッとくる"],
-    series: ["とらぞうシリーズ", "ペット・動物の話", "日常トーク", "AI活用"]
-  },
-  {
-    id: 585,
-    date: "2026/3/8(日)",
-    title: "『RIZIN、リングネームよもやま話』",
-    length: "14分",
-    mood: ["格闘技", "RIZIN", "リングネーム", "友人の話", "スポーツ観戦"],
-    topic: ["テンション高め", "おもしろい", "クスッとくる", "語ってる", "聴き流せる"],
-    recommend: ["格闘技好きに刺さる", "趣味を知りたい人向け", "クスッとしたい時に", "スポーツ好きに"],
-    series: ["格闘技シリーズ", "スポーツ観戦", "趣味の話", "友人・仲間の話"]
-  },
-  {
-    id: 580,
-    date: "2026/3/3(火)",
-    title: "『こういう情勢の中で想うこと』",
-    length: "11分",
-    mood: ["将来の夢", "幸せとは", "世界情勢", "人生観", "目標設定", "俳優という仕事", "友人の話", "備え・防災"],
-    topic: ["しみじみ", "考えさせられる", "温かい", "じっくり聴きたい", "落ち着く"],
-    recommend: ["人生に迷ってる時に", "共感しやすい", "リスナーへのメッセージ性強い"],
-    series: ["人生観・哲学", "日常の気づき", "自己と向き合う話", "将来・目標の話"]
-  },
-  {
-  id: 578,
-  date: "2026/3/1(日)",
-  title: "『釣りYouTubeを復活させたい♪』",
-  length: "8分",
-  mood: ["釣り", "船長・自船釣り", "沼津", "YouTube釣り再開", "アートな夜", "高岩成二さん", "仮面ライダー", "東京マラソン", "今年の計画"],
-  topic: ["わくわく", "テンション高め", "軽め", "聴き流せる", "明るい"],
-  recommend: ["誰でも入りやすい", "釣り好きに刺さる", "これからの活動が気になる人向け"],
-  series: ["釣りシリーズ", "お出かけ前", "今後の活動予告", "YouTube・配信の話"]
- , }
-  {
-    id: 41,
-    date: "2026/3/24(火)",
-    title: "『MLビレッジとファンクラブの違いについて』",
-    length: "30分",
-    mood: ["まじめトーク", "じっくり聴きたい", "温かい", "語ってる"],
-    topic: ["MLビレッジ", "オンラインサロン", "ファンクラブ", "公式グッズ", "バスツアー"],
-    recommend: ["コアファン向け", "MLビレッジ気になってる人必聴", "さとしさんの素顔"],
-    series: ["ファンコミュニティの話", "活動報告", "質問回答", "レター紹介"]
-  }
-];
-// ▲▲▲ ここまで ▲▲▲
+let episodes = [];
+let selMoods  = new Set();
+let selTopics = new Set();
+let selSeries = new Set();
+let allMoods  = [];
+let allTopics = [];
+let allSeries = [];
 
-const allMoods   = [...new Set(episodes.flatMap(e => e.mood))];
-const allTopics  = [...new Set(episodes.flatMap(e => e.topic))];
-const allSeries  = [...new Set(episodes.flatMap(e => e.series))];
-
-let selMoods   = new Set();
-let selTopics  = new Set();
-let selSeries  = new Set();
+fetch('episodes.json')
+  .then(r => r.json())
+  .then(data => {
+    episodes = data;
+    allMoods  = [...new Set(episodes.flatMap(e => e.mood))];
+    allTopics = [...new Set(episodes.flatMap(e => e.topic))];
+    allSeries = [...new Set(episodes.flatMap(e => e.series))];
+    renderTags('mood-tags',   allMoods,   selMoods,   'mood');
+    renderTags('topic-tags',  allTopics,  selTopics,  'topic');
+    renderTags('series-tags', allSeries,  selSeries,  'series');
+    renderResults();
+  })
+  .catch(() => {
+    document.getElementById('results').innerHTML =
+      '<div class="empty">データの読み込みに失敗しました。</div>';
+  });
 
 function renderTags(containerId, tags, selectedSet, type) {
   const el = document.getElementById(containerId);
@@ -432,11 +284,6 @@ function clearAll() {
   renderTags('series-tags', allSeries,  selSeries,  'series');
   renderResults();
 }
-
-renderTags('mood-tags',   allMoods,   selMoods,   'mood');
-renderTags('topic-tags',  allTopics,  selTopics,  'topic');
-renderTags('series-tags', allSeries,  selSeries,  'series');
-renderResults();
 </script>
 </body>
 </html>
