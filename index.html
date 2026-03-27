@@ -3,17 +3,177 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>さとべぇRADIO アーカイブ</title>
+<title>さとべぇRADIO エピソードカタログ</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  /* ここは元のCSSと同様 */
+  :root {
+    --bg: #faf9f6;
+    --bg2: #f2f0eb;
+    --border: #e0ddd5;
+    --text: #1a1814;
+    --text2: #6b6760;
+    --text3: #a09d97;
+    --accent: #2d5a3d;
+    --accent-light: #e8f0eb;
+    --accent2: #8b5e3c;
+    --accent2-light: #f5ede4;
+    --purple: #4a3f6b;
+    --purple-light: #ede9f5;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  header {
+    padding: 3rem 2rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+  .site-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+  .site-sub {
+    font-size: 12px;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  .filter-section {
+    margin-bottom: 1.5rem;
+  }
+  .filter-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tag {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text2);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: 'Noto Sans JP', sans-serif;
+    white-space: nowrap;
+  }
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+  .tag.active-mood { background: var(--accent-light); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+  .tag.active-topic { background: var(--accent2-light); border-color: var(--accent2); color: var(--accent2); font-weight: 500; }
+  .tag.active-series { background: var(--purple-light); border-color: var(--purple); color: var(--purple); font-weight: 500; }
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .results-count { font-size: 12px; color: var(--text3); }
+  .clear-btn {
+    font-size: 12px;
+    color: var(--text3);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .clear-btn:hover { color: var(--text2); }
+  .ep-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 10px;
+    transition: border-color 0.15s, transform 0.1s;
+  }
+  .ep-card:hover { border-color: #c0bdb5; transform: translateY(-1px); }
+  .ep-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .ep-num {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'Noto Serif JP', serif;
+  }
+  .ep-date { font-size: 11px; color: var(--text3); }
+  .ep-length {
+    font-size: 11px;
+    color: var(--text3);
+    background: var(--bg2);
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+  .ep-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .ep-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+  .ep-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--bg2);
+    color: var(--text2);
+  }
+  .ep-tag.mood { background: var(--accent-light); color: var(--accent); }
+  .ep-tag.topic { background: var(--accent2-light); color: var(--accent2); }
+  .empty {
+    text-align: center;
+    padding: 3rem 0;
+    color: var(--text3);
+    font-size: 13px;
+  }
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+  }
+  @media (max-width: 600px) {
+    header { padding: 2rem 1.2rem 1.5rem; }
+    .container { padding: 1.2rem; }
+    .site-title { font-size: 1.3rem; }
+  }
 </style>
 </head>
 <body>
 
 <header>
   <div class="site-title">さとべぇRADIO</div>
-  <div class="site-sub">俳優・松田悟志 — エピソードアーカイブ</div>
+  <div class="site-sub">stand.fmで公開中の俳優・松田悟志さんがナビゲートするさとべぇRADIOのエピソードカタログです。</div>
+  <div class="site-sub">※claudeを使用してタグ付けを行っています。内容に関してご質問がありましたら<a href="https://forms.gle/43gT93k5hYF9GEjr6" target="_blank">こちら</a>よりご連絡ください。</div>
 </header>
 
 <div class="container">
@@ -138,45 +298,35 @@ const episodes = [
     series: ["ファンコミュニティの話", "活動報告", "質問回答", "レター紹介"]
   }
 ];
+// ▲▲▲ ここまで ▲▲▲
 
-// すべてのタグ（気分、テーマ、シリーズ）を取得
-const allMoods = [...new Set(episodes.flatMap(e => e.mood))];
-const allTopics = [...new Set(episodes.flatMap(e => e.topic))];
-const allSeries = [...new Set(episodes.flatMap(e => e.series))];
+const allMoods   = [...new Set(episodes.flatMap(e => e.mood))];
+const allTopics  = [...new Set(episodes.flatMap(e => e.topic))];
+const allSeries  = [...new Set(episodes.flatMap(e => e.series))];
 
-let selMoods = new Set();
-let selTopics = new Set();
-let selSeries = new Set();
+let selMoods   = new Set();
+let selTopics  = new Set();
+let selSeries  = new Set();
 
-// タグをレンダリングする関数
 function renderTags(containerId, tags, selectedSet, type) {
   const el = document.getElementById(containerId);
-  el.innerHTML = ''; // 既存のタグをクリア
-
+  el.innerHTML = '';
   tags.forEach(tag => {
     const btn = document.createElement('button');
     btn.className = 'tag' + (selectedSet.has(tag) ? ` active-${type}` : '');
     btn.textContent = tag;
-    
-    // タグがクリックされた時の挙動
-    btn.addEventListener('click', () => {
-      if (selectedSet.has(tag)) {
-        selectedSet.delete(tag);
-      } else {
-        selectedSet.add(tag);
-      }
-      renderTags(containerId, tags, selectedSet, type); // タグを再描画
-      renderResults(); // 結果を更新
-    });
-
+    btn.onclick = () => {
+      selectedSet.has(tag) ? selectedSet.delete(tag) : selectedSet.add(tag);
+      renderTags(containerId, tags, selectedSet, type);
+      renderResults();
+    };
     el.appendChild(btn);
   });
 }
 
-// 結果を表示する関数
 function renderResults() {
   const filtered = episodes.filter(ep => {
-    const m = selMoods.size === 0 || [...selMoods].some(t => ep.mood.includes(t));
+    const m = selMoods.size  === 0 || [...selMoods].some(t => ep.mood.includes(t));
     const t = selTopics.size === 0 || [...selTopics].some(t => ep.topic.includes(t));
     const s = selSeries.size === 0 || [...selSeries].some(t => ep.series.includes(t));
     return m && t && s;
@@ -210,19 +360,17 @@ function renderResults() {
   `).join('');
 }
 
-// フィルターをすべてクリアする関数
 function clearAll() {
   selMoods.clear(); selTopics.clear(); selSeries.clear();
-  renderTags('mood-tags', allMoods, selMoods, 'mood');
-  renderTags('topic-tags', allTopics, selTopics, 'topic');
-  renderTags('series-tags', allSeries, selSeries, 'series');
+  renderTags('mood-tags',   allMoods,   selMoods,   'mood');
+  renderTags('topic-tags',  allTopics,  selTopics,  'topic');
+  renderTags('series-tags', allSeries,  selSeries,  'series');
   renderResults();
 }
 
-// 初期状態でタグをレンダリング
-renderTags('mood-tags', allMoods, selMoods, 'mood');
-renderTags('topic-tags', allTopics, selTopics, 'topic');
-renderTags('series-tags', allSeries, selSeries, 'series');
+renderTags('mood-tags',   allMoods,   selMoods,   'mood');
+renderTags('topic-tags',  allTopics,  selTopics,  'topic');
+renderTags('series-tags', allSeries,  selSeries,  'series');
 renderResults();
 </script>
 </body>
