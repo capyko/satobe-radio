@@ -7,44 +7,41 @@
 <link rel="icon" href="favicon.ico" type="image/x-icon">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
-
 <style>
-:root {
-  --bg: #faf9f6;
-  --bg2: #f2f0eb;
-  --border: #e0ddd5;
-  --text: #1a1814;
-  --text2: #6b6760;
-  --text3: #a09d97;
-  --accent: #2d5a3d;
-  --accent-light: #e8f0eb;
-  --accent2: #8b5e3c;
-  --accent2-light: #f5ede4;
-  --purple: #4a3f6b;
-  --purple-light: #ede9f5;
-  --card: #ffffff;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'Noto Sans JP', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 14px;
-}
-
-header {
-  padding: 3rem 2rem 2rem;
-  max-width: 800px;
-  margin: 0 auto;
-  border-bottom: 1px solid var(--border);
-}
-
-.site-owner {
+  :root {
+    --bg: #faf9f6;
+    --bg2: #f2f0eb;
+    --border: #e0ddd5;
+    --text: #1a1814;
+    --text2: #6b6760;
+    --text3: #a09d97;
+    --accent: #2d5a3d;
+    --accent-light: #e8f0eb;
+    --accent2: #8b5e3c;
+    --accent2-light: #f5ede4;
+    --purple: #4a3f6b;
+    --purple-light: #ede9f5;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  header {
+    padding: 3rem 2rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+    
+  }
+  .site-owner {
   text-align: right;
 }
-
   .site-title {
     font-family: 'Noto Serif JP', serif;
     font-size: 1.6rem;
@@ -66,43 +63,18 @@ header {
     margin: 0 auto;
     padding: 2rem;
   }
-
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-/* ▼ 折りたたみUI */
-.filter-section {
-  margin-bottom: 1rem;
+  .filter-section { 
+      margin-bottom: 1rem;
   border-bottom: 1px solid var(--border);
-  padding-bottom: 0.5rem;
-}
-
-summary {
-  cursor: pointer;
-  list-style: none;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: var(--text3);
-  text-transform: uppercase;
-  font-weight: 500;
-}
-
-summary::-webkit-details-marker {
-  display: none;
-}
-
-summary::after {
-  content: "＋";
-  float: right;
-}
-
-details[open] summary::after {
-  content: "−";
-}
-
+  padding-bottom: 0.5rem;}
+  .filter-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
   .tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .tag {
     padding: 5px 12px;
@@ -202,10 +174,8 @@ details[open] summary::after {
     .container { padding: 1.2rem; }
     .site-title { font-size: 1.3rem; }
   }
-}
 </style>
 </head>
-
 <body>
 
 <header>
@@ -217,29 +187,24 @@ details[open] summary::after {
 </header>
 
 <div class="container">
-
-  <!-- ▼ 折りたたみ -->
   <details class="filter-section">
     <summary>気分で探す</summary>
     <div class="tags" id="mood-tags"></div>
   </details>
-
-  <details class="filter-section">
-    <summary>テーマで探す</summary>
+<details class="filter-section">
+  <summary class="filter-label">テーマで探す</summary>
     <div class="tags" id="topic-tags"></div>
   </details>
-
-  <details class="filter-section">
-    <summary>シリーズで探す</summary>
-    <div class="tags" id="series-tags"></div>
+<details class="filter-section">
+  <summary class="filter-label">シリーズで探す</summary>
+  <div class="tags" id="series-tags"></div>
   </details>
-
+  <hr class="divider">
   <div class="results-header">
-    <span id="result-count"></span>
-    <button onclick="clearAll()">クリア</button>
+    <span class="results-count" id="result-count"></span>
+    <button class="clear-btn" onclick="clearAll()">すべてクリア</button>
   </div>
-
-  <div id="results"></div>
+  <div id="results"><div class="loading">読み込み中...</div></div>
 </div>
 
 <script>
@@ -328,6 +293,5 @@ function clearAll() {
   renderResults();
 }
 </script>
-
 </body>
 </html>
