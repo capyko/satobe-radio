@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>さとべぇRADIO エピソードカタログ</title>
-
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
@@ -157,8 +158,10 @@ details[open] summary::after {
 
 <header>
   <div class="site-title">さとべぇRADIO エピソードカタログ</div>
-  <div class="site-sub">stand.fmで公開中の俳優・松田悟志さんのラジオまとめ</div>
-  <div class="site-sub site-owner">管理人：かぴこ</div>
+  <div class="site-sub">stand.fmで公開中の俳優・松田悟志さんがナビゲートするさとべぇRADIOのエピソードカタログです。</div>
+  <div class="site-sub">気分やカテゴリでエピソードを簡単に探せるようにしたいという思いから、このページを作成しました。</div>
+  <div class="site-sub">※claudeを使用してタグ付けを行っています。内容に関してご質問やご不明点があれば、<a href="https://forms.gle/43gT93k5hYF9GEjr6" target="_blank">こちら</a>よりご連絡ください。</div>
+  <div class="site-sub site-owner">  管理人：かぴこ  &nbsp;&nbsp;<a href="https://x.com/love2wombat" target="_blank">X</a></div>
 </header>
 
 <div class="container">
@@ -189,69 +192,88 @@ details[open] summary::after {
 
 <script>
 let episodes = [];
-let selMoods = new Set();
+let selMoods  = new Set();
 let selTopics = new Set();
 let selSeries = new Set();
+let allMoods  = [];
+let allTopics = [];
+let allSeries = [];
 
 fetch('episodes.json')
-.then(r => r.json())
-.then(data => {
-  episodes = data;
-  renderTags('mood-tags', [...new Set(data.flatMap(e => e.mood))], selMoods, 'mood');
-  renderTags('topic-tags', [...new Set(data.flatMap(e => e.topic))], selTopics, 'topic');
-  renderTags('series-tags', [...new Set(data.flatMap(e => e.series))], selSeries, 'series');
-  renderResults();
-});
+  .then(r => r.json())
+  .then(data => {
+    episodes = data;
+    allMoods  = [...new Set(episodes.flatMap(e => e.mood))];
+    allTopics = [...new Set(episodes.flatMap(e => e.topic))];
+    allSeries = [...new Set(episodes.flatMap(e => e.series))];
+    renderTags('mood-tags',   allMoods,   selMoods,   'mood');
+    renderTags('topic-tags',  allTopics,  selTopics,  'topic');
+    renderTags('series-tags', allSeries,  selSeries,  'series');
+    renderResults();
+  })
+  .catch(() => {
+    document.getElementById('results').innerHTML =
+      '<div class="empty">データの読み込みに失敗しました。</div>';
+  });
 
-function renderTags(id, tags, selected, type) {
-  const el = document.getElementById(id);
+function renderTags(containerId, tags, selectedSet, type) {
+  const el = document.getElementById(containerId);
   el.innerHTML = '';
   tags.forEach(tag => {
-    const b = document.createElement('button');
-    b.className = 'tag' + (selected.has(tag) ? ` active-${type}` : '');
-    b.textContent = tag;
-    b.onclick = () => {
-      selected.has(tag) ? selected.delete(tag) : selected.add(tag);
-      renderTags(id, tags, selected, type);
+    const btn = document.createElement('button');
+    btn.className = 'tag' + (selectedSet.has(tag) ? ` active-${type}` : '');
+    btn.textContent = tag;
+    btn.onclick = () => {
+      selectedSet.has(tag) ? selectedSet.delete(tag) : selectedSet.add(tag);
+      renderTags(containerId, tags, selectedSet, type);
       renderResults();
     };
-    el.appendChild(b);
+    el.appendChild(btn);
   });
 }
 
 function renderResults() {
   const filtered = episodes.filter(ep => {
-    return (!selMoods.size || ep.mood.some(m => selMoods.has(m)))
-        && (!selTopics.size || ep.topic.some(t => selTopics.has(t)))
-        && (!selSeries.size || ep.series.some(s => selSeries.has(s)));
+    const m = selMoods.size  === 0 || [...selMoods].some(t => ep.mood.includes(t));
+    const t = selTopics.size === 0 || [...selTopics].some(t => ep.topic.includes(t));
+    const s = selSeries.size === 0 || [...selSeries].some(t => ep.series.includes(t));
+    return m && t && s;
   });
 
+  const total = selMoods.size + selTopics.size + selSeries.size;
   document.getElementById('result-count').textContent =
-    `${filtered.length} / ${episodes.length}`;
+    total === 0 ? `全${episodes.length}件` : `${filtered.length} / ${episodes.length}件`;
 
   const res = document.getElementById('results');
-
-  if (!filtered.length) {
-    res.innerHTML = '<div class="empty">見つかりません</div>';
+  if (filtered.length === 0) {
+    res.innerHTML = '<div class="empty">該当するエピソードが見つかりませんでした</div>';
     return;
   }
 
   res.innerHTML = filtered.map(ep => `
     <div class="ep-card">
-      <div>${ep.id} / ${ep.date}</div>
+      <div class="ep-meta">
+        <span class="ep-num">#${ep.id}</span>
+        <span class="ep-date">${ep.date}</span>
+        <span class="ep-length">${ep.length}</span>
+      </div>
       <div class="ep-title">${ep.title}</div>
       <div class="ep-tags">
-        ${ep.mood.map(m => `<span class="ep-tag">${m}</span>`).join('')}
+        ${ep.mood.map(t => `<span class="ep-tag mood">${t}</span>`).join('')}
+      </div>
+      <div class="ep-tags">
+        ${ep.topic.map(t => `<span class="ep-tag topic">${t}</span>`).join('')}
       </div>
     </div>
   `).join('');
 }
 
 function clearAll() {
-  selMoods.clear();
-  selTopics.clear();
-  selSeries.clear();
-  location.reload();
+  selMoods.clear(); selTopics.clear(); selSeries.clear();
+  renderTags('mood-tags',   allMoods,   selMoods,   'mood');
+  renderTags('topic-tags',  allTopics,  selTopics,  'topic');
+  renderTags('series-tags', allSeries,  selSeries,  'series');
+  renderResults();
 }
 </script>
 
