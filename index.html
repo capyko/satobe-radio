@@ -103,63 +103,105 @@ details[open] summary::after {
   content: "−";
 }
 
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
-}
-
-.tag {
-  padding: 5px 12px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.tag.active-mood { background: var(--accent-light); color: var(--accent); }
-.tag.active-topic { background: var(--accent2-light); color: var(--accent2); }
-.tag.active-series { background: var(--purple-light); color: var(--purple); }
-
-.results-header {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.ep-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 1rem;
-  margin-bottom: 10px;
-}
-
-.ep-title {
-  font-family: 'Noto Serif JP', serif;
-  margin: 6px 0;
-}
-
-.ep-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.ep-tag {
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 10px;
-  background: var(--bg2);
-}
-
-.empty {
-  text-align: center;
-  padding: 2rem;
-  color: var(--text3);
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text2);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: 'Noto Sans JP', sans-serif;
+    white-space: nowrap;
+  }
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+  .tag.active-mood { background: var(--accent-light); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+  .tag.active-topic { background: var(--accent2-light); border-color: var(--accent2); color: var(--accent2); font-weight: 500; }
+  .tag.active-series { background: var(--purple-light); border-color: var(--purple); color: var(--purple); font-weight: 500; }
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .results-count { font-size: 12px; color: var(--text3); }
+  .clear-btn {
+    font-size: 12px;
+    color: var(--text3);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .clear-btn:hover { color: var(--text2); }
+  .ep-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 10px;
+    transition: border-color 0.15s, transform 0.1s;
+  }
+  .ep-card:hover { border-color: #c0bdb5; transform: translateY(-1px); }
+  .ep-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .ep-num { font-size: 11px; color: var(--text3); font-family: 'Noto Serif JP', serif; }
+  .ep-date { font-size: 11px; color: var(--text3); }
+  .ep-length {
+    font-size: 11px;
+    color: var(--text3);
+    background: var(--bg2);
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+  .ep-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .ep-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+  .ep-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--bg2);
+    color: var(--text2);
+  }
+  .ep-tag.mood { background: var(--accent-light); color: var(--accent); }
+  .ep-tag.topic { background: var(--accent2-light); color: var(--accent2); }
+  .empty {
+    text-align: center;
+    padding: 3rem 0;
+    color: var(--text3);
+    font-size: 13px;
+  }
+  .loading {
+    text-align: center;
+    padding: 3rem 0;
+    color: var(--text3);
+    font-size: 13px;
+  }
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+  }
+  @media (max-width: 600px) {
+    header { padding: 2rem 1.2rem 1.5rem; }
+    .container { padding: 1.2rem; }
+    .site-title { font-size: 1.3rem; }
+  }
 }
 </style>
 </head>
