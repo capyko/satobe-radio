@@ -318,11 +318,14 @@ function renderResults() {
   <div class="ep-tags">
     ${ep.topic.map(t => `<span class="ep-tag topic">${t}</span>`).join('')}
   </div>
-  ${ep.url ? `
-    <div class="ep-link">
-    <a href="${ep.url}" target="_blank">▶ 再生する</a>
-  </div>
-  ` : ''}
+${ep.url 
+  ? `<div class="ep-link">
+       <a href="${ep.url}" target="_blank">▶ 再生する</a>
+     </div>`
+  : `<div class="ep-link" style="color:#aaa;font-size:12px;">
+       ※リンク準備中
+     </div>`
+}
 </details>
   `).join('');
 }
