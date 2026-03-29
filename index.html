@@ -269,20 +269,23 @@ function renderResults() {
   }
 
   res.innerHTML = filtered.map(ep => `
-    <div class="ep-card">
-      <div class="ep-meta">
-        <span class="ep-num">#${ep.id}</span>
-        <span class="ep-date">${ep.date}</span>
-        <span class="ep-length">${ep.length}</span>
-      </div>
-      <div class="ep-title">${ep.title}</div>
-      <div class="ep-tags">
-        ${ep.mood.map(t => `<span class="ep-tag mood">${t}</span>`).join('')}
-      </div>
-      <div class="ep-tags">
-        ${ep.topic.map(t => `<span class="ep-tag topic">${t}</span>`).join('')}
-      </div>
+<details class="ep-card">
+  <summary>
+    <div class="ep-meta">
+      <span class="ep-num">#${ep.id}</span>
+      <span class="ep-date">${ep.date}</span>
+      <span class="ep-length">${ep.length}</span>
     </div>
+    <div class="ep-title">${ep.title}</div>
+  </summary>
+
+  <div class="ep-tags">
+    ${ep.mood.map(t => `<span class="ep-tag mood">${t}</span>`).join('')}
+  </div>
+  <div class="ep-tags">
+    ${ep.topic.map(t => `<span class="ep-tag topic">${t}</span>`).join('')}
+  </div>
+</details>
   `).join('');
 }
 
