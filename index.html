@@ -299,6 +299,9 @@ function renderResults() {
   <div class="ep-tags">
     ${ep.topic.map(t => `<span class="ep-tag topic">${t}</span>`).join('')}
   </div>
+    <div class="ep-link">
+    <a href="${ep.url}" target="_blank">▶ 再生する</a>
+  </div>
 </details>
   `).join('');
 }
