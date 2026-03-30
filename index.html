@@ -291,30 +291,18 @@ fetch('episodes.json')
 function renderTags(containerId, tags, selectedSet, type) {
   const el = document.getElementById(containerId);
   el.innerHTML = '';
+
   tags.forEach(tag => {
     const btn = document.createElement('button');
     btn.className = 'tag' + (selectedSet.has(tag) ? ` active-${type}` : '');
     btn.textContent = tag;
+
     btn.onclick = () => {
       selectedSet.has(tag) ? selectedSet.delete(tag) : selectedSet.add(tag);
       renderTags(containerId, tags, selectedSet, type);
-
-      // お気に入り切り替え
-function toggleFavorite(id) {
-  if (favorites.has(id)) {
-    favorites.delete(id);
-  } else {
-    favorites.add(id);
-  }
-  localStorage.setItem('favorites', JSON.stringify([...favorites]));
-  renderResults();
-}
-
-// お気に入り表示切替
-function toggleFavoritesView() {
-  showFavoritesOnly = !showFavoritesOnly;
       renderResults();
     };
+
     el.appendChild(btn);
   });
 }
@@ -324,6 +312,7 @@ function renderResults() {
     const m = selMoods.size  === 0 || [...selMoods].some(t => ep.mood.includes(t));
     const t = selTopics.size === 0 || [...selTopics].some(t => ep.topic.includes(t));
     const s = selSeries.size === 0 || [...selSeries].some(t => ep.series.includes(t));
+    const f = !showFavoritesOnly || favorites.has(ep.id);
     return m && t && s;
   });
 
@@ -375,6 +364,20 @@ function clearAll() {
   renderTags('mood-tags',   allMoods,   selMoods,   'mood');
   renderTags('topic-tags',  allTopics,  selTopics,  'topic');
   renderTags('series-tags', allSeries,  selSeries,  'series');
+  renderResults();
+}
+  function toggleFavorite(id) {
+  if (favorites.has(id)) {
+    favorites.delete(id);
+  } else {
+    favorites.add(id);
+  }
+  localStorage.setItem('favorites', JSON.stringify([...favorites]));
+  renderResults();
+}
+
+function toggleFavoritesView() {
+  showFavoritesOnly = !showFavoritesOnly;
   renderResults();
 }
 </script>
