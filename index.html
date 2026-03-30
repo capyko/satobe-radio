@@ -227,6 +227,34 @@ summary::-webkit-details-marker {
 .fav-btn.active {
   color: gold;
 }
+  .header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.fav-toggle {
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text2);
+  padding: 4px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.fav-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.fav-toggle.active {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 500;
+}
 </style>
 </head>
 <body>
@@ -239,7 +267,6 @@ summary::-webkit-details-marker {
   <div class="site-sub site-owner">  管理人：かぴこ  &nbsp;&nbsp;<a href="https://x.com/love2wombat" target="_blank">X</a></div>
 </header>
 <div class="container">
-  <button onclick="toggleFavoritesView()">★お気に入りだけ表示</button>
 <details class="filter-section">
   <summary class="filter-label">気分で探す</summary>
     <div class="tags" id="mood-tags"></div>
@@ -256,6 +283,7 @@ summary::-webkit-details-marker {
   <div class="results-header">
     <span class="results-count" id="result-count"></span>
     <button class="clear-btn" onclick="clearAll()">すべてクリア</button>
+    <button class="fav-toggle" onclick="toggleFavoritesView()">★ お気に入り</button>
   </div>
   <div id="results"><div class="loading">読み込み中...</div></div>
 </div>
