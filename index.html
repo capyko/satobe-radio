@@ -230,6 +230,7 @@ summary::-webkit-details-marker {
   <div class="site-sub site-owner">  管理人：かぴこ  &nbsp;&nbsp;<a href="https://x.com/love2wombat" target="_blank">X</a></div>
 </header>
 <div class="container">
+  <button onclick="toggleFavoritesView()">★お気に入りだけ表示</button>
 <details class="filter-section">
   <summary class="filter-label">気分で探す</summary>
     <div class="tags" id="mood-tags"></div>
@@ -258,6 +259,8 @@ let selSeries = new Set();
 let allMoods  = [];
 let allTopics = [];
 let allSeries = [];
+let favorites = new Set(JSON.parse(localStorage.getItem('favorites') || '[]'));
+let showFavoritesOnly = false;
 
 fetch('episodes.json')
   .then(r => r.json())
@@ -286,6 +289,21 @@ function renderTags(containerId, tags, selectedSet, type) {
     btn.onclick = () => {
       selectedSet.has(tag) ? selectedSet.delete(tag) : selectedSet.add(tag);
       renderTags(containerId, tags, selectedSet, type);
+
+      // お気に入り切り替え
+function toggleFavorite(id) {
+  if (favorites.has(id)) {
+    favorites.delete(id);
+  } else {
+    favorites.add(id);
+  }
+  localStorage.setItem('favorites', JSON.stringify([...favorites]));
+  renderResults();
+}
+
+// お気に入り表示切替
+function toggleFavoritesView() {
+  showFavoritesOnly = !showFavoritesOnly;
       renderResults();
     };
     el.appendChild(btn);
@@ -317,6 +335,12 @@ function renderResults() {
       <span class="ep-num">#${ep.id}</span>
       <span class="ep-date">${ep.date}</span>
       <span class="ep-length">${ep.length}</span>
+      <span 
+          style="margin-left:auto; cursor:pointer; font-size:18px;"
+          onclick="event.stopPropagation(); toggleFavorite(${ep.id})"
+        >
+          ${favorites.has(ep.id) ? '★' : '☆'}
+        </span>
     </div>
     <div class="ep-title">${ep.title}</div>
   </summary>
