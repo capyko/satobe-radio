@@ -218,6 +218,15 @@ summary::-webkit-details-marker {
   background: var(--accent);
   color: #fff;
 }
+  .fav-btn {
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: auto;
+}
+
+.fav-btn.active {
+  color: gold;
+}
 </style>
 </head>
 <body>
@@ -335,12 +344,10 @@ function renderResults() {
       <span class="ep-num">#${ep.id}</span>
       <span class="ep-date">${ep.date}</span>
       <span class="ep-length">${ep.length}</span>
-      <span 
-          style="margin-left:auto; cursor:pointer; font-size:18px;"
-          onclick="event.stopPropagation(); toggleFavorite(${ep.id})"
-        >
-          ${favorites.has(ep.id) ? '★' : '☆'}
-        </span>
+      <span class="fav-btn ${favorites.has(ep.id) ? 'active' : ''}" 
+            onclick="toggleFavorite(${ep.id})">
+        ${favorites.has(ep.id) ? '★' : '☆'}
+      </span>
     </div>
     <div class="ep-title">${ep.title}</div>
   </summary>
