@@ -313,7 +313,7 @@ function renderResults() {
     const t = selTopics.size === 0 || [...selTopics].some(t => ep.topic.includes(t));
     const s = selSeries.size === 0 || [...selSeries].some(t => ep.series.includes(t));
     const f = !showFavoritesOnly || favorites.has(ep.id);
-    return m && t && s;
+    return m && t && s && f;
   });
 
   const total = selMoods.size + selTopics.size + selSeries.size;
