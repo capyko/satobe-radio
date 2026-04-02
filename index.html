@@ -125,9 +125,19 @@
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 1.2rem 1.4rem;
-    margin-bottom: 10px;
     transition: border-color 0.15s, transform 0.1s;
   }
+  #results {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  #results {
+    grid-template-columns: 1fr;
+  }
+}
   .ep-card:hover { border-color: #c0bdb5; transform: translateY(-1px); }
   .ep-meta {
     display: flex;
@@ -166,12 +176,14 @@
     padding: 3rem 0;
     color: var(--text3);
     font-size: 13px;
+    grid-column: 1 / -1;
   }
   .loading {
     text-align: center;
     padding: 3rem 0;
     color: var(--text3);
     font-size: 13px;
+    grid-column: 1 / -1;
   }
   .divider {
     border: none;
