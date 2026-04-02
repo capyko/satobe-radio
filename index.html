@@ -267,6 +267,22 @@ summary::-webkit-details-marker {
   color: var(--accent);
   font-weight: 500;
 }
+  .search-box {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--card);
+  outline: none;
+  transition: border-color 0.15s;
+  margin-bottom: 1rem;
+}
+.search-box:focus {
+  border-color: var(--accent);
+}
 </style>
 </head>
 <body>
@@ -279,6 +295,13 @@ summary::-webkit-details-marker {
   <div class="site-sub site-owner">  管理人：かぴこ  &nbsp;&nbsp;<a href="https://x.com/love2wombat" target="_blank">X</a></div>
 </header>
 <div class="container">
+  <input
+  type="text"
+  class="search-box"
+  id="search-input"
+  placeholder="エピソードを検索..."
+  oninput="renderResults()"
+>
 <details class="filter-section">
   <summary class="filter-label">気分で探す</summary>
     <div class="tags" id="mood-tags"></div>
@@ -348,13 +371,19 @@ function renderTags(containerId, tags, selectedSet, type) {
 }
 
 function renderResults() {
-  const filtered = episodes.filter(ep => {
-    const m = selMoods.size  === 0 || [...selMoods].some(t => ep.mood.includes(t));
-    const t = selTopics.size === 0 || [...selTopics].some(t => ep.topic.includes(t));
-    const s = selSeries.size === 0 || [...selSeries].some(t => ep.series.includes(t));
-    const f = !showFavoritesOnly || favorites.has(ep.id);
-    return m && t && s && f;
-  });
+const query = document.getElementById('search-input')?.value.trim().toLowerCase() ?? '';
+const filtered = episodes.filter(ep => {
+  const m = selMoods.size  === 0 || [...selMoods].some(t => ep.mood.includes(t));
+  const t = selTopics.size === 0 || [...selTopics].some(t => ep.topic.includes(t));
+  const s = selSeries.size === 0 || [...selSeries].some(t => ep.series.includes(t));
+  const f = !showFavoritesOnly || favorites.has(ep.id);
+  const q = query === '' || 
+  ep.title.toLowerCase().includes(query) ||
+  ep.mood.some(t => t.includes(query)) ||
+  ep.topic.some(t => t.includes(query)) ||
+  ep.series.some(t => t.includes(query));
+  return m && t && s && f && q;
+});
 
   const total = selMoods.size + selTopics.size + selSeries.size;
   document.getElementById('result-count').textContent =
@@ -401,6 +430,7 @@ ${ep.url
 
 function clearAll() {
   selMoods.clear(); selTopics.clear(); selSeries.clear();
+  document.getElementById('search-input').value = ''; // ← これを追加
   renderTags('mood-tags',   allMoods,   selMoods,   'mood');
   renderTags('topic-tags',  allTopics,  selTopics,  'topic');
   renderTags('series-tags', allSeries,  selSeries,  'series');
