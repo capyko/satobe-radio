@@ -391,7 +391,7 @@ const filtered = episodes.filter(ep => {
 
   const total = selMoods.size + selTopics.size + selSeries.size;
   document.getElementById('result-count').textContent =
-    total === 0 ? `全${episodes.length}件` : `${filtered.length} / ${episodes.length}件`;
+    total === 0 && query === '' ? `全${episodes.length}件` : `${filtered.length} / ${episodes.length}件`;
 
   const res = document.getElementById('results');
   if (filtered.length === 0) {
