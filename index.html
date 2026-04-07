@@ -311,6 +311,10 @@ summary::-webkit-details-marker {
     <div class="tags" id="mood-tags"></div>
   </details>
 <details class="filter-section">
+  <summary class="filter-label">シーン別で探す</summary>
+    <div class="tags" id="recommend-tags"></div>
+  </details>
+<details class="filter-section">
   <summary class="filter-label">テーマで探す</summary>
     <div class="tags" id="topic-tags"></div>
   </details>
@@ -332,6 +336,8 @@ let episodes = [];
 let selMoods  = new Set();
 let selTopics = new Set();
 let selSeries = new Set();
+let selRecommends = new Set();
+let allRecommends = [];
 let allMoods  = [];
 let allTopics = [];
 let allSeries = [];
@@ -345,6 +351,8 @@ fetch('episodes.json')
     allMoods  = [...new Set(episodes.flatMap(e => e.mood))];
     allTopics = [...new Set(episodes.flatMap(e => e.topic))];
     allSeries = [...new Set(episodes.flatMap(e => e.series))];
+    allRecommends = [...new Set(episodes.flatMap(e => e.recommend))];
+    renderTags('recommend-tags', allRecommends, selRecommends, 'recommend');
     renderTags('mood-tags',   allMoods,   selMoods,   'mood');
     renderTags('topic-tags',  allTopics,  selTopics,  'topic');
     renderTags('series-tags', allSeries,  selSeries,  'series');
@@ -380,11 +388,13 @@ const filtered = episodes.filter(ep => {
   const m = selMoods.size  === 0 || [...selMoods].some(t => ep.mood.includes(t));
   const t = selTopics.size === 0 || [...selTopics].some(t => ep.topic.includes(t));
   const s = selSeries.size === 0 || [...selSeries].some(t => ep.series.includes(t));
+  const t = selRecommends.size === 0 || [...selRecommends].some(t => ep.recommend.includes(t));
   const f = !showFavoritesOnly || favorites.has(ep.id);
   const q = query === '' || 
   ep.title.toLowerCase().includes(query) ||
   ep.mood.some(t => t.includes(query)) ||
   ep.topic.some(t => t.includes(query)) ||
+  ep.recommend.some(t => t.includes(query)) ||
   ep.series.some(t => t.includes(query));
   return m && t && s && f && q;
 });
@@ -433,11 +443,12 @@ ${ep.url
 }
 
 function clearAll() {
-  selMoods.clear(); selTopics.clear(); selSeries.clear();
+  selMoods.clear(); selTopics.clear(); selSeries.clear(); selRecommends.clear();
   document.getElementById('search-input').value = ''; // ← これを追加
   renderTags('mood-tags',   allMoods,   selMoods,   'mood');
   renderTags('topic-tags',  allTopics,  selTopics,  'topic');
   renderTags('series-tags', allSeries,  selSeries,  'series');
+  renderTags('recommend-tags', allRecommends, selRecommends, 'recommend');
   renderResults();
 }
   function toggleFavorite(id) {
