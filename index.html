@@ -171,6 +171,14 @@
   }
   .ep-tag.mood { background: var(--accent-light); color: var(--accent); }
   .ep-tag.topic { background: var(--accent2-light); color: var(--accent2); }
+  .ep-tag.series { background: var(--purple-light); color: var(--purple); }
+  .filter-section .tags {
+    animation: fadeInDown 0.15s ease;
+  }
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
   .empty {
     text-align: center;
     padding: 3rem 0;
@@ -304,7 +312,7 @@ summary::-webkit-details-marker {
   class="search-box"
   id="search-input"
   placeholder="エピソードを検索..."
-  oninput="renderResults()"
+  oninput="onSearchInput()"
 >
 <details class="filter-section">
   <summary class="filter-label">気分で探す</summary>
@@ -343,6 +351,12 @@ let allTopics = [];
 let allSeries = [];
 let favorites = new Set(JSON.parse(localStorage.getItem('favorites') || '[]'));
 let showFavoritesOnly = false;
+let debounceTimer;
+
+function onSearchInput() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(renderResults, 150);
+}
 
 fetch('episodes.json')
   .then(r => r.json())
@@ -399,7 +413,7 @@ const filtered = episodes.filter(ep => {
   return m && t && r && s && f && q;
 });
 
-  const total = selMoods.size + selTopics.size + selSeries.size;
+  const total = selMoods.size + selTopics.size + selSeries.size + selRecommends.size;
   document.getElementById('result-count').textContent =
     total === 0 && query === '' ? `全${episodes.length}件` : `${filtered.length} / ${episodes.length}件`;
 
@@ -417,7 +431,7 @@ const filtered = episodes.filter(ep => {
       <span class="ep-date">${ep.date}</span>
       <span class="ep-length">${ep.length}</span>
       <span class="fav-btn ${favorites.has(ep.id) ? 'active' : ''}" 
-            onclick="toggleFavorite(${ep.id})">
+            onclick="toggleFavorite(event, ${ep.id})">
         ${favorites.has(ep.id) ? '★' : '☆'}
       </span>
     </div>
@@ -429,6 +443,9 @@ const filtered = episodes.filter(ep => {
   </div>
   <div class="ep-tags">
     ${ep.topic.map(t => `<span class="ep-tag topic">${t}</span>`).join('')}
+  </div>
+  <div class="ep-tags">
+    ${ep.series.map(t => `<span class="ep-tag series">${t}</span>`).join('')}
   </div>
 ${ep.url 
   ? `<div class="ep-link">
@@ -451,7 +468,9 @@ function clearAll() {
   renderTags('recommend-tags', allRecommends, selRecommends, 'recommend');
   renderResults();
 }
-  function toggleFavorite(id) {
+  function toggleFavorite(e, id) {
+  e.preventDefault();
+  e.stopPropagation();
   if (favorites.has(id)) {
     favorites.delete(id);
   } else {
@@ -463,6 +482,7 @@ function clearAll() {
 
 function toggleFavoritesView() {
   showFavoritesOnly = !showFavoritesOnly;
+  document.querySelector('.fav-toggle').classList.toggle('active', showFavoritesOnly);
   renderResults();
 }
 </script>
