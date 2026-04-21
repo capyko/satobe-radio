@@ -32,6 +32,34 @@
     --purple-light: #ede9f5;
     --card: #ffffff;
   }
+  /* ダークモード用の変数上書き */
+[data-theme="dark"] {
+  --bg: #1a1917;
+  --bg2: #2a2825;
+  --border: #3d3a35;
+  --text: #e0ddd5;
+  --text2: #b0ada7;
+  --text3: #807d77;
+  --accent: #5e9e73;
+  --accent-light: #243028;
+  --accent2: #c59b7b;
+  --accent2-light: #302820;
+  --purple: #9d8ec4;
+  --purple-light: #282435;
+  --card: #252320;
+}
+
+/* 切り替えボタンのスタイル（お好みで調整してください） */
+.theme-toggle {
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text2);
+  padding: 4px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Noto Sans JP', sans-serif;
@@ -334,6 +362,7 @@ summary::-webkit-details-marker {
   <div class="results-header">
     <span class="results-count" id="result-count"></span>
     <button class="clear-btn" onclick="clearAll()">条件をクリア</button>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙 ダークモード</button>
     <button class="fav-toggle" onclick="toggleFavoritesView()">★ お気に入りだけ表示</button>
   </div>
   <div id="results"><div class="loading">読み込み中...</div></div>
@@ -485,6 +514,27 @@ function toggleFavoritesView() {
   document.querySelector('.fav-toggle').classList.toggle('active', showFavoritesOnly);
   renderResults();
 }
+  function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  
+  // ボタンのテキストを更新
+  const btn = document.querySelector('.theme-toggle');
+  btn.textContent = newTheme === 'dark' ? '☀️ ライトモード' : '🌙 ダークモード';
+}
+
+// ページ読み込み時に保存されたテーマを適用
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    const btn = document.querySelector('.theme-toggle');
+    if (btn) btn.textContent = '☀️ ライトモード';
+  }
+});
 </script>
 </body>
 </html>
