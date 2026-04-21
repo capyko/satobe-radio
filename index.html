@@ -34,19 +34,26 @@
   }
   /* ダークモード用の変数上書き */
 [data-theme="dark"] {
-  --bg: #1a1917;
-  --bg2: #2a2825;
-  --border: #3d3a35;
-  --text: #e0ddd5;
-  --text2: #b0ada7;
-  --text3: #807d77;
-  --accent: #5e9e73;
-  --accent-light: #243028;
-  --accent2: #c59b7b;
-  --accent2-light: #302820;
-  --purple: #9d8ec4;
-  --purple-light: #282435;
-  --card: #252320;
+  /* 背景：深いネイビー */
+  --bg: #1a1f2c;          
+  /* サブ背景・カード：少しだけ明るいネイビー */
+  --bg2: #242a38;
+  --card: #242a38;
+  /* 境界線：背景に馴染む青みグレー */
+  --border: #323a4d;
+
+  /* 文字色：純白ではなく、少し青みや温かみのある白 */
+  --text: #e2e8f0;        
+  --text2: #94a3b8;       
+  --text3: #64748b;
+
+  /* アクセントカラーの微調整（紺背景で見やすい色に） */
+  --accent: #4ade80;      /* 明るめの緑 */
+  --accent-light: #1e2d24;
+  --accent2: #fbbf24;     /* 落ち着いたゴールド系 */
+  --accent2-light: #2d2a1e;
+  --purple: #c084fc;      /* 明るめのパープル */
+  --purple-light: #251e2d;
 }
 
 /* 切り替えボタンのスタイル（お好みで調整してください） */
